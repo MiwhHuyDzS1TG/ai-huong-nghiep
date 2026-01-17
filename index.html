@@ -811,12 +811,12 @@ function submitM0(){
   student.basicInfo.name = v;
   saveStudent();
 
-  $("m0").classList.add("hidden");
+  $("m0").style.display = "none";
   $("app").classList.remove("hidden");
 
-  showOnly("m1");
-
+  showOnly("m1"); // OK, nhưng chỉ khi showOnly KHÔNG bị INIT phá
 }
+
 
 
 
@@ -960,27 +960,33 @@ function showDebug(){
 
 /* ================= INIT ================= */
 
-window.addEventListener("load",()=>{
-  loadStudent();
-});
+
 document.addEventListener("keydown", e=>{
   if(e.key === "Enter"){
-    const introVisible = !document.getElementById("m0").classList.contains("hidden");
-    if(introVisible){
+    const m0 = document.getElementById("m0");
+    if(m0 && !m0.classList.contains("hidden")){
       submitM0();
     }
   }
 });
+
 window.addEventListener("load",()=>{
-  if(loadStudent() && student.basicInfo?.name){
-    document.getElementById("m0").style.display = "none";
-    document.getElementById("app").classList.remove("hidden");
-    document.getElementById("m1").classList.remove("hidden");
+  const hasData = loadStudent();
+
+  if(hasData && student.basicInfo?.name){
+    $("m0").style.display = "none";
+    $("app").classList.remove("hidden");
+    showOnly("m1");
+  }else{
+    $("m0").style.display = "flex"; // intro overlay
+    $("app").classList.add("hidden");
   }
 });
+
 
 </script>
 
 </body>
 </html>
+
 
