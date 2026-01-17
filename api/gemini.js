@@ -4,17 +4,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt } = req.body;
+    // ✅ PARSE BODY THỦ CÔNG
+    const body = typeof req.body === "string"
+      ? JSON.parse(req.body)
+      : req.body;
+
+    const prompt = body?.prompt;
 
     if (!prompt || typeof prompt !== "string") {
-      return res.status(400).json({ error: "Prompt is required" });
+      return res.status(400).json({ error: "Prompt missing or invalid" });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: "Missing GEMINI_API_KEY" });
+      return res.status(500).json({ error: "GEMINI_API_KEY not set" });
     }
 
+    // ✅ GỌI GEMINI
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
@@ -33,13 +39,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // 🔁 TRẢ NGUYÊN FORMAT GOOGLE → frontend đọc được
     return res.status(200).json(data);
 
   } catch (err) {
-    console.error("Gemini API error:", err);
+    console.error("Gemini function error:", err);
     return res.status(500).json({
-      error: "Gemini request failed",
+      error: "Internal server error",
       detail: err.message || String(err)
     });
   }
