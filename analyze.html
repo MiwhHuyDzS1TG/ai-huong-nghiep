@@ -346,9 +346,10 @@ async function fetchGemini(prompt){
   const data = await res.json();
   hideTyping();
 
-  if (data.error) {
-    console.error(data.error);
-    return "⚠️ Lỗi hệ thống: " + data.error;
+  console.log("🔥 BACKEND FULL RESPONSE:", data);
+
+  if (!data || data.text === null) {
+    throw new Error("BACKEND RETURNED NO TEXT");
   }
 
   return data.text;
@@ -436,6 +437,7 @@ window.onload = ()=>{
 
 </body>
 </html>
+
 
 
 
