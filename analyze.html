@@ -346,11 +346,14 @@ async function fetchGemini(prompt){
   const data = await res.json();
   hideTyping();
 
-  // 🔥 LOG ĐỂ CHẮC
-  console.log("BACKEND RETURN:", data);
+  if (data.error) {
+    console.error(data.error);
+    return "⚠️ Lỗi hệ thống: " + data.error;
+  }
 
   return data.text;
 }
+
 
 
 /* ================= CHAT CACHE ================= */
@@ -433,6 +436,7 @@ window.onload = ()=>{
 
 </body>
 </html>
+
 
 
 
