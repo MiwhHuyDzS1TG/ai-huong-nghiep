@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "@google/genai": "^0.6.0"
-  }
+  "name": "ai-huong-nghiep",
+  "version": "1.0.0",
+  "type": "module"
 }
