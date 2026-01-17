@@ -337,12 +337,10 @@ async function fetchGemini(prompt){
   showTyping();
   $("status").textContent = "AI đang phân tích…";
 
-  const res = await fetch(GEMINI_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      contents:[{ role:"user", parts:[{ text: prompt }] }]
-    })
+  const res = await fetch("/api/gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
   });
 
   const data = await res.json();
@@ -351,6 +349,7 @@ async function fetchGemini(prompt){
   return data?.candidates?.[0]?.content?.parts?.[0]?.text
     || "AI không phản hồi.";
 }
+
 
 /* ================= CHAT CACHE ================= */
 
@@ -432,4 +431,5 @@ window.onload = ()=>{
 
 </body>
 </html>
+
 
