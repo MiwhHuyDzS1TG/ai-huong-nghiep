@@ -346,8 +346,7 @@ async function fetchGemini(prompt){
   const data = await res.json();
   hideTyping();
 
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text
-    || "AI không phản hồi.";
+  return data.text || "AI không phản hồi.";
 }
 
 
@@ -431,4 +430,5 @@ window.onload = ()=>{
 
 </body>
 </html>
+
 
