@@ -346,7 +346,10 @@ async function fetchGemini(prompt){
   const data = await res.json();
   hideTyping();
 
-  return data.text || "AI không phản hồi.";
+  // 🔥 LOG ĐỂ CHẮC
+  console.log("BACKEND RETURN:", data);
+
+  return data.text;
 }
 
 
@@ -430,5 +433,6 @@ window.onload = ()=>{
 
 </body>
 </html>
+
 
 
