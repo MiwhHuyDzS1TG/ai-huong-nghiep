@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Mentor – Hướng nghiệp thông minh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- FONT -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+  :root{
+    --bg:#f6f7fb;
+    --panel:#ffffff;
+    --primary:#4f46e5;
+    --primary-soft:#eef2ff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e5e7eb;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Inter",system-ui,-apple-system;
+  }
+
+  /* ===== APP LAYOUT ===== */
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{
+    width:260px;
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    padding:28px 24px;
+  }
+
+  .brand{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:28px;
+  }
+
+  .steps{
+    list-style:none;
+    padding:0;
+    margin:0;
+  }
+
+  .steps li{
+    padding:12px 14px;
+    border-radius:12px;
+    margin-bottom:8px;
+    font-size:14px;
+    color:var(--muted);
+  }
+
+  .steps li.active{
+    background:var(--primary-soft);
+    color:var(--primary);
+    font-weight:600;
+  }
+
+  /* ===== MAIN ===== */
+    .main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+    }
+
+    .container{
+    width:100%;
+    max-width:720px;
+    }
+
+
+  /* ===== CARD ===== */
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    animation:fade .35s ease;
+  }
+
+  .hidden{display:none}
+
+  h2{
+    margin:0 0 8px;
+    font-size:24px;
+  }
+
+  p{
+    margin:0 0 22px;
+    color:var(--muted);
+  }
+
+  /* ===== INPUT ===== */
+  label{
+    display:block;
+    margin:18px 0 8px;
+    font-weight:600;
+  }
+
+  input[type="text"], textarea{
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    font-size:14px;
+    font-family:inherit;
+  }
+
+  textarea{min-height:90px}
+
+  /* ===== OPTION CARD ===== */
+  .option{
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px 18px;
+    margin:10px 0;
+    cursor:pointer;
+    transition:.15s ease;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .option input{display:none}
+
+  .option::before{
+    content:"";
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    border:2px solid var(--border);
+    flex-shrink:0;
+  }
+
+  .option:hover{
+    border-color:var(--primary);
+    background:var(--primary-soft);
+  }
+
+  .option.selected{
+    border-color:var(--primary);
+    background:var(--primary-soft);
+  }
+
+  .option.selected::before{
+    background:var(--primary);
+    border-color:var(--primary);
+  }
+
+  /* ===== BUTTON ===== */
+  button{
+    margin-top:26px;
+    background:var(--primary);
+    color:white;
+    padding:14px 26px;
+    border-radius:16px;
+    border:none;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+  }
+
+  button:hover{opacity:.95}
+
+  /* ===== ANIMATION ===== */
+  @keyframes fade{
+    from{opacity:0;transform:translateY(8px)}
+    to{opacity:1;transform:none}
+  }
+
+/* ===== HERO INTRO ===== */
+.hero{
+  min-height: calc(100vh - 96px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hero-card{
+  max-width:520px;
+  width:100%;
+  padding:48px 44px;
+  border-radius:28px;
+  background:linear-gradient(180deg,#ffffff,#f8f9ff);
+  border:1px solid var(--border);
+  text-align:center;
+  animation:fade .5s ease;
+}
+
+.hero-badge{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+  background:var(--primary-soft);
+  color:var(--primary);
+  margin-bottom:18px;
+}
+
+.hero-title{
+  font-size:34px;
+  font-weight:800;
+  line-height:1.2;
+  margin-bottom:12px;
+}
+
+.hero-desc{
+  font-size:16px;
+  color:var(--muted);
+  margin-bottom:34px;
+}
+
+.hero-input{
+  margin-bottom:18px;
+}
+
+.hero-input input{
+  text-align:center;
+  font-size:16px;
+}
+
+.hero-btn{
+  width:100%;
+  padding:16px;
+  font-size:16px;
+  border-radius:18px;
+}
+
+.hero-note{
+  margin-top:18px;
+  font-size:13px;
+  color:var(--muted);
+}
+/* ===== INTRO SCREEN ===== */
+.intro{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #eef2ff, transparent),
+    var(--bg);
+}
+
+.intro-card{
+  width:100%;
+  max-width:520px;
+  background:white;
+  border-radius:28px;
+  padding:48px 48px 42px;
+  text-align:center;
+  box-shadow:
+    0 20px 40px rgba(15,23,42,.08),
+    0 4px 10px rgba(15,23,42,.04);
+}
+
+
+.intro-logo{
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:.08em;
+  margin-bottom:6px;
+}
+
+.intro-tagline{
+  font-size:14px;
+  font-weight:600;
+  color:var(--primary);
+  margin-bottom:20px;
+}
+
+.intro-desc{
+  font-size:15px;
+  line-height:1.7;
+  color:var(--muted);
+  margin-bottom:28px;
+}
+
+
+.intro-input{
+  margin-bottom:20px;
+}
+
+.intro-input input{
+  width:100%;
+  padding:16px 18px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  font-size:15px;
+  text-align:center;
+  margin-bottom:26px;
+}
+
+.intro-btn{
+  width:100%;
+  padding:16px;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:700;
+}
+
+
+.intro-note{
+  margin-top:22px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* ===== ANIMATION ===== */
+@keyframes introEnter{
+  from{
+    opacity:0;
+    transform:translateY(24px) scale(.96);
+    filter:blur(6px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+    filter:none;
+  }
+}
+
+.option{ outline:none }
+.option:focus{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+  </style>
+</head>
+
+<body>
+    <!-- ================= INTRO / MODULE 0 ================= -->
+<div id="m0" class="intro">
+  <div class="intro-card">
+    <div class="intro-logo">LUMEN</div>
+
+    <div class="intro-tagline">
+      AI Career Mentor for Grade 12 Students
+    </div>
+
+    <div class="intro-desc">
+      LUMEN giúp em <b>hiểu rõ bản thân</b>,<br>
+      phân tích tư duy – tính cách – năng lực<br>
+      và gợi ý <b>ngành nghề & lộ trình học tập phù hợp</b>.
+    </div>
+
+    <div class="intro-input">
+      <input id="name" type="text" placeholder="Nhập tên của em để bắt đầu">
+    </div>
+
+    <button class="intro-btn" onclick="submitM0()">
+      🚀 Bắt đầu hành trình cùng LUMEN
+    </button>
+
+    <div class="intro-note">
+      ⏱ ~10 phút • Không đúng–sai • Hoàn toàn bảo mật
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <!-- MAIN -->
+  <main class="main">
+    <div class="container">
+      <!-- ================= MODULE 1 ================= -->
+        <div id="m1" class="card hidden">
+        <h2>Em học và làm việc như thế nào?</h2>
+        <p>Không có đúng – sai. Chỉ cần chọn điều giống em nhất.</p>
+
+        <!-- ===== CÂU 1 ===== -->
+        <label>Hoạt động em hứng thú (chọn tối đa 3)</label>
+
+        <div class="option" onclick="toggleCheckbox(this)">
+            <input type="checkbox" value="Giải quyết vấn đề logic">
+            Giải bài khó, suy luận
+        </div>
+
+        <div class="option" onclick="toggleCheckbox(this)">
+            <input type="checkbox" value="Công nghệ & máy tính">
+            Công nghệ, máy tính
+        </div>
+
+        <div class="option" onclick="toggleCheckbox(this)">
+            <input type="checkbox" value="Viết & trình bày">
+            Viết, nói, thuyết trình
+        </div>
+
+        <div class="option" onclick="toggleCheckbox(this)">
+            <input type="checkbox" value="Thiết kế & sáng tạo">
+            Thiết kế, sáng tạo
+        </div>
+
+        <div class="option" onclick="toggleCheckbox(this)">
+            <input type="checkbox" value="Giúp đỡ người khác">
+            Giúp đỡ, hỗ trợ người khác
+        </div>
+
+        <!-- ===== FIELD BẮT BUỘC CHO SCRIPT (ẨN) ===== -->
+        <!-- Script submitM1 CẦN CÁC FIELD NÀY -->
+        <input type="radio" name="learning" value="" hidden checked>
+        <input type="radio" name="workEnv" value="" hidden checked>
+        <textarea id="studyPain" hidden></textarea>
+
+        <button onclick="submitM1()">Tiếp tục</button>
+        </div>
+
+
+      <!-- ================= MODULE 2 ================= -->
+    <!-- ================= MODULE 2 ================= -->
+    <div id="m2" class="card hidden">
+    <h2>Em là người như thế nào?</h2>
+    <p>Hãy trả lời thật, không ai chấm điểm em cả.</p>
+
+    <!-- ===== CÂU 5 ===== -->
+    <label>Em cảm thấy mình là người:</label>
+
+    <div class="option" onclick="toggleRadio(this)">
+        <input type="radio" name="personality" value="Hướng nội">
+        Hướng nội
+    </div>
+
+    <div class="option" onclick="toggleRadio(this)">
+        <input type="radio" name="personality" value="Hướng ngoại">
+        Hướng ngoại
+    </div>
+
+    <div class="option" onclick="toggleRadio(this)">
+        <input type="radio" name="personality" value="Cân bằng">
+        Cân bằng
+    </div>
+
+    <!-- ===== CÂU 6 ===== -->
+    <label>Đặc điểm nào mô tả em đúng nhất? (chọn 2–3)</label>
+
+    <div class="option" onclick="toggleCheckbox(this)">
+        <input type="checkbox" value="Cẩn thận">
+        Cẩn thận
+    </div>
+
+    <div class="option" onclick="toggleCheckbox(this)">
+        <input type="checkbox" value="Sáng tạo">
+        Sáng tạo
+    </div>
+
+    <div class="option" onclick="toggleCheckbox(this)">
+        <input type="checkbox" value="Kiên trì">
+        Kiên trì
+    </div>
+
+    <div class="option" onclick="toggleCheckbox(this)">
+        <input type="checkbox" value="Giao tiếp tốt">
+        Giao tiếp tốt
+    </div>
+
+    <div class="option" onclick="toggleCheckbox(this)">
+        <input type="checkbox" value="Tư duy logic">
+        Tư duy logic
+    </div>
+
+    <!-- ===== TEXTAREA BẮT BUỘC CHO SCRIPT ===== -->
+    <label>Điểm mạnh lớn nhất của em</label>
+    <textarea id="strengths"></textarea>
+
+    <label>Điều khiến em hay tự ti hoặc trì hoãn</label>
+    <textarea id="weaknesses"></textarea>
+
+    <label>Điều em lo nhất khi chọn ngành</label>
+    <textarea id="careerFear"></textarea>
+
+    <button onclick="submitM2()">Tiếp tục</button>
+    </div>
+
+    <!-- ================= MODULE 3A – MI ================= -->
+    <div id="m3a" class="card hidden">
+    <h2>Đa trí tuệ (MI)</h2>
+    <p>Chọn phương án giống em nhất cho mỗi câu hỏi.</p>
+
+    <!-- ❗ BẮT BUỘC: script renderMI() sẽ bơm HTML vào đây -->
+    <div id="miContainer"></div>
+
+    <button onclick="submitMI()">Tiếp tục</button>
+    </div>
+
+
+    <!-- ================= MODULE 3B – HOLLAND ================= -->
+    <div id="m3b" class="card hidden">
+    <h2>Môi trường nghề nghiệp (Holland)</h2>
+    <p>Chọn phương án mô tả môi trường công việc em thấy phù hợp.</p>
+
+    <!-- ❗ BẮT BUỘC: renderHolland() sẽ đổ câu hỏi vào đây -->
+    <div id="hollandContainer"></div>
+
+    <button onclick="submitHolland()">Tiếp tục</button>
+    </div>
+
+
+    <!-- ================= MODULE 3C – SWOT ================= -->
+<div id="m3c" class="card hidden">
+  <h2>SWOT cá nhân</h2>
+  <p>
+    Phần này giúp AI hiểu thêm về góc nhìn cá nhân của em.
+    Không cần viết dài, chỉ cần thật.
+  </p>
+
+  <!-- ❗ Các id này script submitSWOT() đang DÙNG TRỰC TIẾP -->
+
+  <label>Strengths – Điểm mạnh</label>
+  <textarea
+    id="swot_strengths"
+    placeholder="Ví dụ: chăm chỉ, học nhanh, tư duy logic..."
+  ></textarea>
+
+  <label>Weaknesses – Hạn chế</label>
+  <textarea
+    id="swot_weaknesses"
+    placeholder="Ví dụ: dễ nản, thiếu kỷ luật, hay trì hoãn..."
+  ></textarea>
+
+  <label>Opportunities – Cơ hội</label>
+  <textarea
+    id="swot_opportunities"
+    placeholder="Ví dụ: gia đình ủng hộ, có thời gian học thêm, trường tốt..."
+  ></textarea>
+
+  <label>Threats – Thách thức</label>
+  <textarea
+    id="swot_threats"
+    placeholder="Ví dụ: áp lực điểm số, cạnh tranh cao, thiếu định hướng..."
+  ></textarea>
+
+  <button onclick="submitSWOT()">Hoàn tất & Phân tích</button>
+</div>
+
+      <!-- ================= DEBUG (ẨN) ================= -->
+      <div id="debug" class="card hidden" style="display:none"></div>
+
+    </div>
+  </main>
+</div>
+
+
+<!-- ================= SCRIPT ================= -->
+<script>
+
+"use strict";
+
+function go(a, b){
+  $(a).classList.add("hidden");
+  $(b).classList.remove("hidden");
+}
+
+
+function showOnly(id){
+  document.querySelectorAll(".card").forEach(c=>{
+    c.classList.add("hidden");
+  });
+  document.getElementById(id).classList.remove("hidden");
+}
+
+
+function goAnalyze(){
+  saveStudent(); // đã có sẵn
+  window.location.href = "analyze.html";
+}
+
+/* ================= HELPER ================= */
+const $ = (id) => document.getElementById(id);
+
+
+
+/* ===== OPTION CARD HANDLER (GLOBAL FIX) ===== */
+
+function toggleCheckbox(el){
+  const input = el.querySelector("input[type='checkbox']");
+  if(!input) return;
+
+  const container = el.closest(".card");
+  const checkedCount = container.querySelectorAll(
+    "input[type='checkbox']:checked"
+  ).length;
+
+  // Nếu đang chọn và đã đủ 3 → chặn
+  if(!input.checked && checkedCount >= 3){
+    alert("Bạn chỉ được chọn tối đa 3 lựa chọn.");
+    return;
+  }
+
+  input.checked = !input.checked;
+  el.classList.toggle("selected", input.checked);
+}
+
+
+function toggleRadio(el){
+  const input = el.querySelector("input[type='radio']");
+  if(!input) return;
+
+  // clear các option cùng name
+  document
+    .querySelectorAll(`input[name="${input.name}"]`)
+    .forEach(r=>{
+      r.checked = false;
+      r.closest(".option")?.classList.remove("selected");
+    });
+
+  input.checked = true;
+  el.classList.add("selected");
+}
+
+/* ================= STORAGE ================= */
+const STORAGE_KEY = "ai_huong_nghiep_student";
+
+/* ================= DATA ================= */
+
+/* ===== MI – 12 CÂU ===== */
+const MI_QUESTIONS = [
+  { q:"Khi học kiến thức mới, em thường:", o:{logic:"Tìm quy luật",language:"Ghi chú & giải thích",visual:"Vẽ sơ đồ",tech:"Thử làm"} },
+  { q:"Khi gặp bài khó, em hay:", o:{logic:"Chia nhỏ phân tích",language:"Hỏi người khác",visual:"Hình dung cách giải",tech:"Thử nhiều cách"} },
+  { q:"Hoạt động khiến em tập trung lâu nhất:", o:{logic:"Giải toán",language:"Viết trình bày",visual:"Thiết kế",tech:"Lập trình"} },
+  { q:"Em thấy mình mạnh nhất ở:", o:{logic:"Suy luận",language:"Diễn đạt",visual:"Hình ảnh",tech:"Công cụ"} },
+  { q:"Khi làm việc nhóm, em thường:", o:{logic:"Phân tích vấn đề",language:"Trình bày ý kiến",visual:"Đề xuất ý tưởng",tech:"Làm phần kỹ thuật"} },
+  { q:"Em học hiệu quả nhất khi:", o:{logic:"Có cấu trúc rõ",language:"Được thảo luận",visual:"Có hình ảnh",tech:"Được thực hành"} },
+  { q:"Môn em dễ tiếp thu nhất:", o:{logic:"Toán/Lý",language:"Văn/Sử",visual:"Mỹ thuật",tech:"Tin/Công nghệ"} },
+  { q:"Em thích giải quyết vấn đề bằng:", o:{logic:"Lý trí",language:"Ngôn từ",visual:"Hình ảnh",tech:"Hành động"} },
+  { q:"Khi hoàn thành việc, em thích nhất:", o:{logic:"Kết quả đúng",language:"Được công nhận",visual:"Sản phẩm đẹp",tech:"Hệ thống chạy"} },
+  { q:"Khi học online, em thường:", o:{logic:"Làm bài tập",language:"Ghi chép",visual:"Xem sơ đồ",tech:"Thực hành"} },
+  { q:"Em cảm thấy tự tin nhất khi:", o:{logic:"Giải bài logic",language:"Nói trước lớp",visual:"Thiết kế",tech:"Code/lắp ráp"} },
+  { q:"Nếu tự học, em sẽ:", o:{logic:"Lập kế hoạch",language:"Đọc & viết",visual:"Vẽ mindmap",tech:"Làm thử"} }
+];
+
+/* ===== HOLLAND – 12 CÂU ===== */
+const HOLLAND_QUESTIONS = [
+  { q:"Em thích công việc nào hơn?", o:{R:"Sửa chữa",I:"Nghiên cứu",A:"Sáng tạo",S:"Giúp người",E:"Kinh doanh",C:"Quản lý"} },
+  { q:"Môi trường em thích:", o:{R:"Thực tế",I:"Yên tĩnh",A:"Tự do",S:"Giao tiếp",E:"Cạnh tranh",C:"Quy trình"} },
+  { q:"Em thấy hợp hơn với:", o:{R:"Làm tay chân",I:"Làm trí óc",A:"Làm nghệ thuật",S:"Làm dịch vụ",E:"Làm lãnh đạo",C:"Làm hành chính"} },
+  { q:"Trong nhóm, em muốn là:", o:{R:"Người thực hiện",I:"Người phân tích",A:"Người sáng tạo",S:"Người hỗ trợ",E:"Người dẫn dắt",C:"Người tổ chức"} },
+  { q:"Công việc em thấy thoải mái:", o:{R:"Có máy móc",I:"Có dữ liệu",A:"Có ý tưởng",S:"Có con người",E:"Có mục tiêu",C:"Có quy định"} },
+  { q:"Em muốn công việc:", o:{R:"Thực hành nhiều",I:"Suy nghĩ nhiều",A:"Sáng tạo",S:"Giúp ích",E:"Thành công",C:"Ổn định"} },
+  { q:"Em thích môi trường:", o:{R:"Xưởng/trường",I:"Phòng lab",A:"Studio",S:"Trường học",E:"Doanh nghiệp",C:"Văn phòng"} },
+  { q:"Điều em coi trọng:", o:{R:"Thực tế",I:"Chính xác",A:"Cảm hứng",S:"Ý nghĩa",E:"Kết quả",C:"Trật tự"} },
+  { q:"Em thích làm việc với:", o:{R:"Công cụ",I:"Kiến thức",A:"Ý tưởng",S:"Con người",E:"Nguồn lực",C:"Hồ sơ"} },
+  { q:"Em phù hợp với:", o:{R:"Kỹ thuật",I:"Khoa học",A:"Nghệ thuật",S:"Giáo dục",E:"Kinh doanh",C:"Kế toán"} },
+  { q:"Em muốn công việc:", o:{R:"Vận động",I:"Tư duy",A:"Tự do",S:"Gắn kết",E:"Thăng tiến",C:"Ổn định"} },
+  { q:"Em thích vai trò:", o:{R:"Thợ",I:"Nhà nghiên cứu",A:"Nhà sáng tạo",S:"Người hỗ trợ",E:"Người lãnh đạo",C:"Người quản lý"} }
+];
+
+/* ================= OBJECT ================= */
+
+let student = createEmptyStudent();
+
+function createEmptyStudent(){
+  return {
+    basicInfo:{},
+    preferences:{},
+    selfAssessment:{},
+    MI:{ score:{logic:0,language:0,visual:0,tech:0}, answers:[] },
+    holland:{ score:{R:0,I:0,A:0,S:0,E:0,C:0}, answers:[] },
+    SWOT:{}
+  };
+}
+
+/* ================= STORAGE HANDLER ================= */
+
+function saveStudent(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(student));
+}
+
+function loadStudent(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return false;
+  try{
+    student = JSON.parse(raw);
+    return true;
+  }catch{
+    return false;
+  }
+}
+
+function resetAll(){
+  if(!confirm("Reset toàn bộ dữ liệu?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  student = createEmptyStudent();
+  location.reload();
+}
+
+/* ================= NORMALIZE ================= */
+
+function normalizeProfile(student){
+  const topMI = Object.entries(student.MI.score)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,2)
+    .map(i=>i[0]);
+
+  const topHolland = Object.entries(student.holland.score)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,3)
+    .map(i=>i[0]);
+
+  const hasNoise = /ngu|địt|mẹ|cc/i.test(JSON.stringify(student));
+
+  return { topMI, topHolland, hasNoise };
+}
+
+/* ================= PROMPT BUILDER ================= */
+
+function buildGeminiPrompt(student){
+  return `
+Bạn là CỐ VẤN HƯỚNG NGHIỆP cho học sinh lớp 12 Việt Nam.
+
+YÊU CẦU VAI TRÒ:
+- Viết như một thầy/cô tư vấn hướng nghiệp
+- Giải thích rõ ràng, dễ hiểu
+- Không phán xét, không chê trách
+- Không nhắc lại hoặc lặp lại từ ngữ tiêu cực xuất hiện trong dữ liệu
+- Không dùng thuật ngữ học thuật khó hiểu nếu không cần thiết
+
+MỤC TIÊU:
+Giúp học sinh:
+1. Hiểu rõ xu hướng học tập và cách tư duy của bản thân
+2. Hiểu vì sao mình phù hợp với một số nhóm ngành nhất định
+3. Có định hướng học tập cụ thể, không mơ hồ
+4. Cảm thấy yên tâm hơn khi đứng trước lựa chọn ngành nghề
+
+========================
+THÔNG TIN HỌC SINH
+
+Họ tên: ${student.basicInfo.name}
+
+--- SỞ THÍCH & CÁCH HỌC ---
+- Sở thích nổi bật: ${student.preferences.interests?.join(", ") || "Chưa rõ"}
+- Cách học hiệu quả: ${student.preferences.learningStyle}
+- Môi trường làm việc mong muốn: ${student.preferences.workStyle}
+- Khó khăn khi học: ${student.preferences.studyPain || "Không nêu"}
+
+--- TỰ ĐÁNH GIÁ ---
+- Tính cách: ${student.selfAssessment.personality}
+- Đặc điểm cá nhân: ${student.selfAssessment.traits?.join(", ") || "Không rõ"}
+- Điểm mạnh tự nhận thấy: ${student.selfAssessment.strengths}
+- Hạn chế đang gặp phải: ${student.selfAssessment.weaknesses}
+- Điều lo lắng khi chọn ngành: ${student.selfAssessment.careerFear || "Không nêu"}
+
+--- ĐA TRÍ TUỆ (MI) ---
+Dưới đây là các câu hỏi và câu trả lời của học sinh:
+
+${student.MI.answers.map((a,i)=>`${i+1}. ${a.question}\n→ Học sinh chọn: ${a.selected}`).join("\n\n")}
+
+Tổng hợp MI:
+- Logic: ${student.MI.score.logic}
+- Ngôn ngữ: ${student.MI.score.language}
+- Không gian/hình ảnh: ${student.MI.score.visual}
+- Kỹ thuật/thực hành: ${student.MI.score.tech}
+
+--- MÔI TRƯỜNG NGHỀ NGHIỆP (HOLLAND) ---
+${student.holland.answers.map((a,i)=>`${i+1}. ${a.question}\n→ Học sinh chọn: ${a.selected}`).join("\n\n")}
+
+Tổng hợp Holland:
+R ${student.holland.score.R}, I ${student.holland.score.I}, A ${student.holland.score.A},
+S ${student.holland.score.S}, E ${student.holland.score.E}, C ${student.holland.score.C}
+
+--- SWOT (chỉ để tham khảo) ---
+- Điểm mạnh: ${student.SWOT.strengths}
+- Hạn chế: ${student.SWOT.weaknesses}
+- Cơ hội: ${student.SWOT.opportunities}
+- Thách thức: ${student.SWOT.threats}
+
+========================
+YÊU CẦU TRẢ LỜI:
+
+Hãy viết một BÀI TƯ VẤN HƯỚNG NGHIỆP HOÀN CHỈNH, gồm các phần sau:
+
+1. **Nhận xét tổng quan về cách học và tư duy của học sinh**
+2. **Phân tích điểm mạnh nổi bật và cách chúng ảnh hưởng đến lựa chọn ngành**
+3. **Gợi ý 2–4 nhóm ngành phù hợp**, mỗi nhóm:
+   - Giải thích vì sao phù hợp
+   - Phù hợp với kiểu học và tính cách nào
+4. **Gợi ý một số ngành cụ thể** (mang tính tham khảo)
+5. **Đề xuất lộ trình học tập cho lớp 12** (nên tập trung vào những gì)
+6. **Một vài lời khuyên thực tế, nhẹ nhàng và dễ áp dụng**
+
+Viết bằng tiếng Việt, giọng điệu tích cực, định hướng, không gây áp lực.
+`;
+}
+
+
+/* ================= FLOW ================= */
+
+function submitM0(){
+  const v = $("name").value.trim();
+  if(!v){ alert("Nhập tên"); return; }
+
+  student.basicInfo.name = v;
+  saveStudent();
+
+  $("m0").classList.add("hidden");
+  $("app").classList.remove("hidden");
+
+  showOnly("m1");
+  setProgress(20);
+}
+
+
+
+function submitM1(){
+  student.preferences = {
+    interests:[...document.querySelectorAll('#m1 input[type=checkbox]:checked')].map(i=>i.value),
+    learningStyle:document.querySelector('input[name="learning"]:checked')?.value || "",
+    workStyle:document.querySelector('input[name="workEnv"]:checked')?.value || "",
+    studyPain:$("studyPain").value
+  };
+
+  saveStudent();
+  showOnly("m2");
+}
+
+
+function submitM2(){
+  student.selfAssessment = {
+    personality:document.querySelector('input[name="personality"]:checked')?.value || "",
+    traits:[...document.querySelectorAll('#m2 input[type=checkbox]:checked')].map(i=>i.value),
+    strengths:$("strengths").value,
+    weaknesses:$("weaknesses").value,
+    careerFear:$("careerFear").value
+  };
+
+  saveStudent();
+  renderMI();
+  showOnly("m3a");
+}
+
+
+/* ================= MI / HOLLAND / SWOT (giữ nguyên logic) ================= */
+/* ================= MI ================= */
+
+function renderMI(){
+  const container = $("miContainer");
+  container.innerHTML = "";
+
+  MI_QUESTIONS.forEach((q, i) => {
+    let html = `<div class="question"><b>${i + 1}. ${q.q}</b><br>`;
+    for (const key in q.o) {
+      html += `
+        <label>
+          <input type="radio" name="mi_${i}" value="${key}">
+          ${q.o[key]}
+        </label><br>
+      `;
+    }
+    html += `</div>`;
+    container.insertAdjacentHTML("beforeend", html);
+  });
+}
+
+function submitMI(){
+  student.MI.score = { logic:0, language:0, visual:0, tech:0 };
+  student.MI.answers = [];
+
+  MI_QUESTIONS.forEach((q, i) => {
+    const selected = document.querySelector(`input[name="mi_${i}"]:checked`);
+    if (selected) {
+      student.MI.score[selected.value]++;
+      student.MI.answers.push({
+        question: q.q,
+        selected: q.o[selected.value],
+        type: selected.value
+      });
+    }
+  });
+
+  saveStudent();
+  renderHolland();
+  go("m3a", "m3b");
+}
+
+/* ================= HOLLAND ================= */
+
+function renderHolland(){
+  const container = $("hollandContainer");
+  container.innerHTML = "";
+
+  HOLLAND_QUESTIONS.forEach((q, i) => {
+    let html = `<div class="question"><b>${i + 1}. ${q.q}</b><br>`;
+    for (const key in q.o) {
+      html += `
+        <label>
+          <input type="radio" name="hol_${i}" value="${key}">
+          ${q.o[key]}
+        </label><br>
+      `;
+    }
+    html += `</div>`;
+    container.insertAdjacentHTML("beforeend", html);
+  });
+}
+
+function submitHolland(){
+  student.holland.score = { R:0, I:0, A:0, S:0, E:0, C:0 };
+  student.holland.answers = [];
+
+  HOLLAND_QUESTIONS.forEach((q, i) => {
+    const selected = document.querySelector(`input[name="hol_${i}"]:checked`);
+    if (selected) {
+      student.holland.score[selected.value]++;
+      student.holland.answers.push({
+        question: q.q,
+        selected: q.o[selected.value],
+        type: selected.value
+      });
+    }
+  });
+
+  saveStudent();
+  go("m3b", "m3c");
+}
+
+/* ================= SWOT ================= */
+
+function submitSWOT(){
+  student.SWOT = {
+    strengths: $("swot_strengths").value,
+    weaknesses: $("swot_weaknesses").value,
+    opportunities: $("swot_opportunities").value,
+    threats: $("swot_threats").value
+  };
+
+  saveStudent();
+
+  // 👉 Chuyển thẳng sang trang phân tích
+  window.location.href = "analyze.html";
+}
+
+
+/* ================= DEBUG ================= */
+
+function showDebug(){
+  go("m3c","debug");
+  $("debugData").textContent = JSON.stringify(student,null,2);
+  $("promptData").textContent = buildGeminiPrompt(student);
+  saveStudent();
+}
+
+/* ================= INIT ================= */
+
+window.addEventListener("load",()=>{
+  loadStudent();
+});
+document.addEventListener("keydown", e=>{
+  if(e.key === "Enter"){
+    const introVisible = !document.getElementById("m0").classList.contains("hidden");
+    if(introVisible){
+      submitM0();
+    }
+  }
+});
+window.addEventListener("load",()=>{
+  if(loadStudent() && student.basicInfo?.name){
+    document.getElementById("m0").style.display = "none";
+    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("m1").classList.remove("hidden");
+  }
+});
+
+</script>
+
+</body>
+</html>

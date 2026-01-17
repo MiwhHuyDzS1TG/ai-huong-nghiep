@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>AI Hướng nghiệp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#f5f7fb;
+  --panel:#ffffff;
+  --bubble-ai:#f1f5f9;
+  --bubble-user:#2563eb;
+  --border:#e5e7eb;
+  --text:#0f172a;
+  --muted:#64748b;
+  --accent:#2563eb;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+}
+
+/* ===== LAYOUT ===== */
+.app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+.header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  background:var(--panel);
+}
+
+.header h1{
+  margin:0;
+  font-size:18px;
+  font-weight:600;
+}
+
+.status{
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* ===== CHAT ===== */
+.chat{
+  flex:1;
+  overflow-y:auto;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.msg{
+  max-width:800px;
+  padding:16px 18px;
+  border-radius:14px;
+  line-height:1.7;
+  font-size:14.5px;
+  animation:fadeUp .25s ease;
+}
+
+.ai{
+  align-self:flex-start;
+  background:var(--bubble-ai);
+  border:1px solid var(--border);
+}
+
+.user{
+  align-self:flex-end;
+  background:var(--bubble-user);
+  color:white;
+}
+
+/* ===== MARKDOWN ===== */
+.msg h3{margin:12px 0 6px;font-size:16px}
+.msg ul{margin:6px 0;padding-left:18px}
+.msg li{margin:4px 0}
+.msg b{font-weight:600}
+
+/* ===== INPUT ===== */
+.input-area{
+  border-top:1px solid var(--border);
+  background:var(--panel);
+  padding:14px;
+  display:flex;
+  gap:12px;
+}
+
+textarea{
+  flex:1;
+  resize:none;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:white;
+  color:var(--text);
+  font-size:14px;
+}
+
+textarea::placeholder{color:var(--muted)}
+
+button{
+  padding:0 18px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  background:var(--accent);
+  color:white;
+}
+
+button:hover{opacity:.9}
+
+/* ===== FOOTER ===== */
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  padding:10px;
+}
+
+.actions button{
+  background:white;
+  color:var(--muted);
+  border:1px solid var(--border);
+}
+
+/* ===== LOADING DOTS ===== */
+.dots::after{
+  content:"";
+  animation:dots 1.4s infinite;
+}
+
+@keyframes dots{
+  0%{content:""}
+  33%{content:"."}
+  66%{content:".."}
+  100%{content:"..."}
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>🎓 AI Tư vấn Hướng nghiệp</h1>
+    <div id="status" class="status">Đang chuẩn bị phân tích…</div>
+  </div>
+
+  <div id="chat" class="chat"></div>
+
+  <div class="input-area">
+    <textarea id="input" rows="2"
+      placeholder="Nhập câu hỏi của bạn…"></textarea>
+    <button onclick="sendChat()">Gửi</button>
+  </div>
+
+  <div class="actions">
+    <button onclick="back()">⬅ Quay lại</button>
+    <button onclick="resetAll()">🧹 Reset</button>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ================= CONFIG (GIỮ NGUYÊN LOGIC) ================= */
+
+const STORAGE_KEY = "ai_huong_nghiep_student";
+const CHAT_CACHE_KEY = "ai_huong_nghiep_chat_cache";
+
+const GEMINI_API_KEY = "AIzaSyAHo2QY658jb8kqilmC0EOtGj7B5oBnt1I";
+const GEMINI_URL =
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+let student = null;
+let conversationText = "";
+
+/* ================= PROMPT BUILDER (GIỮ NGUYÊN) ================= */
+
+function buildGeminiPrompt(student){
+  return `
+Bạn là CỐ VẤN HƯỚNG NGHIỆP cho học sinh lớp 12 Việt Nam.
+
+YÊU CẦU VAI TRÒ:
+- Viết như một thầy/cô tư vấn hướng nghiệp
+- Giải thích rõ ràng, dễ hiểu
+- Không phán xét, không chê trách
+- Không nhắc lại hoặc lặp lại từ ngữ tiêu cực xuất hiện trong dữ liệu
+- Không dùng thuật ngữ học thuật khó hiểu nếu không cần thiết
+
+MỤC TIÊU:
+Giúp học sinh:
+1. Hiểu rõ xu hướng học tập và cách tư duy của bản thân
+2. Hiểu vì sao mình phù hợp với một số nhóm ngành nhất định
+3. Có định hướng học tập cụ thể, không mơ hồ
+4. Cảm thấy yên tâm hơn khi đứng trước lựa chọn ngành nghề
+
+========================
+THÔNG TIN HỌC SINH
+
+Họ tên: ${student.basicInfo.name}
+
+--- SỞ THÍCH & CÁCH HỌC ---
+- Sở thích nổi bật: ${student.preferences.interests?.join(", ") || "Chưa rõ"}
+- Cách học hiệu quả: ${student.preferences.learningStyle}
+- Môi trường làm việc mong muốn: ${student.preferences.workStyle}
+- Khó khăn khi học: ${student.preferences.studyPain || "Không nêu"}
+
+--- TỰ ĐÁNH GIÁ ---
+- Tính cách: ${student.selfAssessment.personality}
+- Đặc điểm cá nhân: ${student.selfAssessment.traits?.join(", ") || "Không rõ"}
+- Điểm mạnh tự nhận thấy: ${student.selfAssessment.strengths}
+- Hạn chế đang gặp phải: ${student.selfAssessment.weaknesses}
+- Điều lo lắng khi chọn ngành: ${student.selfAssessment.careerFear || "Không nêu"}
+
+--- ĐA TRÍ TUỆ (MI) ---
+${student.MI.answers.map((a,i)=>`${i+1}. ${a.question}\n→ ${a.selected}`).join("\n\n")}
+
+Tổng MI:
+Logic ${student.MI.score.logic},
+Ngôn ngữ ${student.MI.score.language},
+Không gian ${student.MI.score.visual},
+Kỹ thuật ${student.MI.score.tech}
+
+--- HOLLAND ---
+R ${student.holland.score.R}, I ${student.holland.score.I}, A ${student.holland.score.A},
+S ${student.holland.score.S}, E ${student.holland.score.E}, C ${student.holland.score.C}
+
+--- SWOT ---
+- Điểm mạnh: ${student.SWOT.strengths}
+- Hạn chế: ${student.SWOT.weaknesses}
+- Cơ hội: ${student.SWOT.opportunities}
+- Thách thức: ${student.SWOT.threats}
+
+========================
+YÊU CẦU TRẢ LỜI:
+1. Nhận xét tổng quan
+2. Phân tích điểm mạnh
+3. Gợi ý 2–4 nhóm ngành
+4. Ngành cụ thể
+5. Lộ trình lớp 12
+6. Lời khuyên thực tế
+`;
+}
+
+/* ================= HELPERS ================= */
+
+const $ = id => document.getElementById(id);
+
+function md(text){
+  return text
+    .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
+    .replace(/^### (.*$)/gim,"<h3>$1</h3>")
+    .replace(/\n- (.*)/g,"<li>$1</li>")
+    .replace(/(<li>.*<\/li>)/gs,"<ul>$1</ul>")
+    .replace(/\n/g,"<br>");
+}
+
+function addMsg(role, html){
+  const d = document.createElement("div");
+  d.className = "msg " + role;
+  d.innerHTML = html;
+  $("chat").appendChild(d);
+  $("chat").scrollTop = $("chat").scrollHeight;
+}
+
+/* ================= TYPING INDICATOR ================= */
+
+function showTyping(){
+  const d = document.createElement("div");
+  d.className = "msg ai";
+  d.id = "typing";
+  d.innerHTML = "<i>AI đang suy nghĩ<span class='dots'></span></i>";
+  $("chat").appendChild(d);
+  $("chat").scrollTop = $("chat").scrollHeight;
+}
+
+function hideTyping(){
+  const t = $("typing");
+  if(t) t.remove();
+}
+
+/* ================= STREAMING (ADAPTIVE) ================= */
+
+async function streamText(fullText){
+  const d = document.createElement("div");
+  d.className = "msg ai";
+  $("chat").appendChild(d);
+
+  const len = fullText.length;
+  let step = 2, speed = 20;
+
+  if(len > 800){ step = 6; speed = 14; }
+  else if(len > 400){ step = 5; speed = 16; }
+  else if(len > 200){ step = 4; speed = 18; }
+
+  let i = 0;
+
+  const timer = setInterval(()=>{
+    const progress = i / len;
+    let dynamicStep = step;
+
+    if(progress > 0.7) dynamicStep = Math.max(1, step - 2);
+    if(progress > 0.9) dynamicStep = 1;
+
+    i += dynamicStep;
+    d.innerHTML = md(fullText.slice(0, i));
+    $("chat").scrollTop = $("chat").scrollHeight;
+
+    if(i >= len){
+      clearInterval(timer);
+      d.innerHTML = md(fullText);
+      saveChatCache();
+    }
+  }, speed);
+}
+
+/* ================= GEMINI ================= */
+
+async function fetchGemini(prompt){
+  showTyping();
+  $("status").textContent = "AI đang phân tích…";
+
+  const res = await fetch(GEMINI_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      contents:[{ role:"user", parts:[{ text: prompt }] }]
+    })
+  });
+
+  const data = await res.json();
+  hideTyping();
+
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text
+    || "AI không phản hồi.";
+}
+
+/* ================= CHAT CACHE ================= */
+
+function saveChatCache(){
+  localStorage.setItem(CHAT_CACHE_KEY, JSON.stringify({
+    conversationText,
+    chatHTML: $("chat").innerHTML
+  }));
+}
+
+function restoreChatCache(){
+  const raw = localStorage.getItem(CHAT_CACHE_KEY);
+  if(!raw) return false;
+
+  try{
+    const data = JSON.parse(raw);
+    conversationText = data.conversationText || "";
+    $("chat").innerHTML = data.chatHTML || "";
+    $("chat").scrollTop = $("chat").scrollHeight;
+    $("status").textContent = "Đã khôi phục cuộc trò chuyện";
+    return true;
+  }catch{
+    return false;
+  }
+}
+
+/* ================= FLOW ================= */
+
+function loadStudent(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw){
+    location.href="index.html";
+    return false;
+  }
+  student = JSON.parse(raw);
+  return true;
+}
+
+async function analyze(){
+  conversationText = buildGeminiPrompt(student);
+  const res = await fetchGemini(conversationText);
+  conversationText += "\n\nAI:\n" + res;
+  $("status").textContent = "Hoàn tất";
+  streamText(res);
+}
+
+async function sendChat(){
+  const q = $("input").value.trim();
+  if(!q) return;
+
+  $("input").value="";
+  addMsg("user", md(q));
+
+  conversationText += "\n\nHọc sinh hỏi:\n" + q;
+  const r = await fetchGemini(conversationText);
+  conversationText += "\n\nAI:\n" + r;
+  $("status").textContent = "Sẵn sàng";
+  streamText(r);
+}
+
+function back(){ location.href="index.html"; }
+
+function resetAll(){
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(CHAT_CACHE_KEY);
+  location.href="index.html";
+}
+
+/* ================= INIT ================= */
+
+window.onload = ()=>{
+  if(!loadStudent()) return;
+
+  if(!restoreChatCache()){
+    analyze(); // chỉ gọi Gemini khi CHƯA có cache
+  }
+};
+</script>
+
+</body>
+</html>
