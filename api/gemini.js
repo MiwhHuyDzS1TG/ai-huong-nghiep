@@ -24,19 +24,15 @@ export default async function handler(req, res) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: prompt }]
-            }
-          ]
+          // 🔥 CHỐT HẠ: GỬI CONTENTS DẠNG STRING
+          contents: prompt
         })
       }
     );
 
     const data = await response.json();
 
-    // 🔥 ÉP TEXT AN TOÀN
+    // 🔥 LẤY TEXT AN TOÀN
     const text =
       data?.candidates?.[0]?.content?.parts
         ?.map(p => p.text)
@@ -44,7 +40,7 @@ export default async function handler(req, res) {
         .join("\n");
 
     return res.status(200).json({
-      text: text || "⚠️ AI không thể trả lời với dữ liệu hiện tại."
+      text: text || "⚠️ Gemini không thể trả lời với prompt hiện tại."
     });
 
   } catch (err) {
